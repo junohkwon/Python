@@ -10,6 +10,10 @@ f2(3)
 # 4
 # ->5,6
 
+1
+2 3
+4 5 6
+
 
 # def f6(matrix):
 #     print(list(map(lambda x : sum(x), matrix)))
