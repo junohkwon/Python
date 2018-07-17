@@ -7,7 +7,10 @@
 # f2(b)
 
 # def f4(lst):
-#      pass
+#     print(sum(list(map(lambda x : x[0] if x[1]%2==1 else 0,enumerate(lst)))))
+#
+# f4([1,2,3,4])
+# f4([1,2,3,4,5])
 
 # def f6(lst):
 #     print(max(lst))
@@ -21,6 +24,13 @@
 # f8(1,10,2)
 # f8(1,10,11)
 # f8(1,10,7)
+
+# def f10(n):
+#     print(*(map(lambda x : '*'*x, range(1,n+1))),sep='\n')
+#
+# f10(1)
+# f10(2)
+# f10(3)
 
 # def f12(lst):
 #     print(all(map(lambda x : x < 0, lst)))
@@ -39,6 +49,13 @@
 # f14(a)
 # f14(b)
 # f14(c)
+
+# def f16(n):
+#     print(*(map(lambda x : '*'*x, range(n,0,-1))),sep='\n')
+#
+# f16(3)
+# f16(2)
+# f16(1)
 
 # import math
 # def f18(n):
@@ -59,7 +76,28 @@
 #
 # f20([[1,2,3],[4,5,6],[7,8,9]])
 
-def f22(lst):
-    print(*list(map(lambda x:list(range(x,-1,-1)),lst)),sep='\n')
+# def f22(lst):
+#     print(*list(map(lambda x:list(range(x,-1,-1)),lst)),sep='\n')
+#
+# f22([1,3,5])
 
-f22([1,3,5])
+# def f24(n):
+#     print(*filter(lambda x : x%2==0 or x%3==0, range(1,n+1)),sep='\n')
+#
+# f24(10)
+# f24(1)
+# f24(3)
+
+# def f26(lst):
+#     print(sorted(lst)[-2])
+#
+# f26([1,4,3,2,5])
+# f26([3,2])
+# f26([3,4])
+
+# def f28(lst):
+#     print(*map(lambda x : sorted(x[1])[-1], enumerate(lst)),sep='\n')
+#
+# f28([[1,2,3],[4,5,6],[7,8,9]])
+# f28([[3,2,1],[0,-1,-2]])
+# f28([[1,2,3,4],[1],[34],[2],[3],[56],[67]])
