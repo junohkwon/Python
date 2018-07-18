@@ -1,7 +1,3 @@
-'''
-4-A.Function Practice (10)
-'''
-
 def f2(lst):
     for i in range(0,len(lst)):
         if lst[i] % 2 ==1:
