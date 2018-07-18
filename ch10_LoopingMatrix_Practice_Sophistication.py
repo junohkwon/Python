@@ -39,5 +39,48 @@
 # f8([[1,2,3],[4,5,6]])
 # f8([[1],[2],[3],[4]])
 
-def f10(matrix1, matrix2):
-    pass
+# def f10(matrix1, matrix2):
+#     rmatrix=[]
+#     if len(matrix1[0]) == len(matrix2):
+#         for row in range(0,len(matrix1)):
+#             lst=[]
+#             value=0
+#             for col2 in range(0, len(matrix2[0])):
+#                 lst.append(sum(list(map(lambda col : matrix1[row][col]*matrix2[col][col2], range(0, len(matrix1[row]))))))
+#             rmatrix.append(lst)
+#     return rmatrix
+#
+# #f10([[1,0],[0,1]],[[1,0],[0,1]])
+# a = f10([[1,2,3],[4,5,6]],[[-1,-1],[-1,-1],[-1,-1]])
+# print(a)
+
+def f12(rows, cols):
+    matrix=[]
+
+    for r in range(0, rows):
+        row=[]
+        lambda c : 
+
+
+f12(3,3)
+
+
+def f14(rows, cols):
+    matrix=[]
+
+    for r in range(0,rows):
+        row=[]
+        for c in range(0,cols):
+            cal=0
+            if r-1 >= 0:
+                cal+=1
+            if r+1 < rows:
+                cal += 1
+            if c-1 >= 0:
+                cal += 1
+            if c+1 < cols:
+                cal += 1
+            row.append(cal)
+        matrix.append(row)
+
+    return matrix
