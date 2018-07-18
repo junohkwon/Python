@@ -1,13 +1,11 @@
 '''
-4-A.Function Practice (10조)
+4-A.Function Practice (10)
 '''
 
 def f2(lst):
     for i in range(0,len(lst)):
         if lst[i] % 2 ==1:
             print(lst[i])
-
-
 
 def f4(lst):
     sumval = 0
@@ -16,8 +14,6 @@ def f4(lst):
             sumval += i
     return sumval
 
-
-
 def f6(lst):
     maxval= lst[0]
     for i in range(0,len(lst)):
@@ -25,22 +21,16 @@ def f6(lst):
             maxval = lst[i]
     return maxval
 
-
-
 def f8(a,b,n):
     for i in range(a,b+1):
         if i % n == 0:
             print(i)
-
-
 
 def f10(n):
     for i in range(1,n+1):
         for j in range(0,i):
             print('*',end='')
         print()
-
-
 
 def f12(lst):
     negative_cnt = 0
@@ -53,8 +43,6 @@ def f12(lst):
     else:
         return False
 
-
-
 def f14(lst):
     max_idx=-1
     for i in range(0,len(lst)):
@@ -63,15 +51,11 @@ def f14(lst):
 
     return max_idx
 
-
-
 def f16(n):
     for i in range(n,0,-1):
         for j in range(i,0,-1):
             print('*',end='')
         print()
-
-
 
 def f18(n):
     fac = 1
@@ -80,22 +64,16 @@ def f18(n):
 
     return fac
 
-
-
 def f20(lst):
     for row in range(0,len(lst)):
         for i in range(lst[row],-1,-1):
             print(i,end=' ')
         print()
 
-
-
 def f22(n):
     for i in range(1,n+1):
         if i%2 == 0 or i%3 == 0:
             print(i)
-
-
 
 def f24(lst):
     fir_max= -99999
@@ -109,8 +87,6 @@ def f24(lst):
         elif val > sec_max:
             sec_max = val
     return sec_max
-
-
 
 def f26(lst):
     for row in range(0,len(lst)):
