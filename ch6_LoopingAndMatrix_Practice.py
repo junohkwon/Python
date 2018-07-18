@@ -1,11 +1,5 @@
-'''
-ch0. Homework
-Looping and Matrix Practice
-'''
-
-
 def f2(n):
-    val=1;
+    val=1
     for i in range(1,n+1):
         for j in range(0,i):
             print(val,end=' ')
@@ -13,7 +7,7 @@ def f2(n):
         print()
 
 def f4(n):
-    val=1;
+    val=1
     for i in range(1,n+1):
         for j in range(0,i):
             print(val,end=' ')
@@ -80,41 +74,3 @@ def f14(rows, cols):
         matrix.append(row)
 
     return matrix
-
-print('====== f2 ======')
-f2(3)
-f2(0)
-f2(1)
-f2(5)
-
-print('====== f4 ======')
-f4(3)
-f4(0)
-f4(1)
-
-print('====== f6 ======')
-f6([[1,0],[0,1]])
-f6([[1,2,3],[4,5,6],[7,8,9]])
-f6([[1]])
-
-print('====== f8 ======')
-print(f8([[1,0],[0,1]]))
-print(f8([[1,2,3],[4,5,6]]))
-print(f8([[1],[2],[3],[4]]))
-
-print('====== f10 ======')
-f10([[1,0],[0,1]])
-f10([[1,2,3],[4,5,6]])
-f10([[1],[2],[3],[4]])
-
-print('====== f12 ======')
-print(f12([[1,0],[0,1]],[[1,0],[0,1]]))
-print(f12([[1,2,3],[4,5,6]],[[-1,-1],[-1,-1],[-1,-1]]))
-print(f12([[4,3,2,1]],[[1],[2],[3],[4]]))
-
-print('====== f14 ======')
-print(f14(3,3))
-print(f14(5,1))
-print(f14(5,0))
-print(f14(0,5))
-print(f14(2,2))
