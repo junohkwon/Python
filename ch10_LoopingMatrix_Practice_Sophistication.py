@@ -55,11 +55,8 @@
 # print(a)
 
 def f12(rows, cols):
-    matrix=[]
+    print(list(map(lambda r : list(map(lambda c : r+c, range(cols))), range(rows))))
 
-    for r in range(0, rows):
-        row=[]
-        lambda c : 
 
 
 f12(3,3)
