@@ -117,7 +117,7 @@ def f4():
     if len(dict) == 1:
         print('A building is successfully inserted')
     else:
-        print('Insert fail - Error occurred')
+        print('Building insert fail - Error occurred')
 
 def f5():
     #공연장 삭제
@@ -149,19 +149,88 @@ def f5():
         finally:
             connection.close()
 
-        sql = ('select * from book where p_id in ( select p_id from assign where b_id = %s)')
-        if isExists(sql, [b_id]):
+        try:
+            #결과확인
+            sql = ('select * from book where p_id in ( select p_id from assign where b_id = %s)')
+            if isExists(sql, [b_id]):
+                raise Exception('Delete Fail')
+            sql = ('select * from assign where b_id = %s')
+            if isExists(sql, [b_id]):
+                raise Exception('Delete Fail')
+            sql = ('select * from building where id = %s')
+            if isExists(sql, [b_id]):
+                raise Exception('Delete Fail')
+        except:
             print('Delete fail - Error occurred')
-        sql = ('select * from assign where b_id = %s')
-        if isExists(sql, [b_id]):
-            print('Delete fail - Error occurred')
-        sql = ('select * from building where b_id = %s')
-        if isExists(sql, [b_id]):
-            print('Delete fail - Error occurred')
+
 
     else:
         print('Building does not exists : ', b_id)
 
+def f6():
+    #공연 추가
+    p_name = input('Performance name: ')
+    p_type = input('Performance type: ')
+    p_price = input('Performance price: ')
+
+    sql=('insert into performance (name, type, price) values (%s, %s, %s)')
+
+    ExecuteNonQuery(sql, [p_name, p_type, p_price])
+
+    sql = ('select * from performance where name=%s and type=%s and price=%s')
+    dict = ExecuteQueryWithParam(sql, [p_name, p_type, p_price])
+
+    if len(dict) == 1:
+        print('A performance is successfully inserted')
+    else:
+        print('Performance insert fail - Error occurred')
+
+
+def f7():
+    #공연 삭제
+    p_id = int(input('Performance ID: '))
+
+    sql=('select * from performance where id = %s')
+    dict = ExecuteQueryWithParam(sql,[p_id])
+
+    if len(dict) == 1:
+
+        connection = getConn()
+        try:
+            with connection.cursor() as cursor:
+                # performance 연결된 book 삭제
+                sql = ('delete from book where p_id = %s')
+                cursor.execute(sql, [p_id])
+
+                # assign 삭제
+                sql = ('delete from assign where p_id = %s')
+                cursor.execute(sql, [p_id])
+
+                # performance 삭제
+                sql = ('delete from performance where id = %s')
+                cursor.execute(sql, [p_id])
+
+                connection.commit()
+        except:
+            connection.rollback()
+        finally:
+            connection.close()
+
+        try:
+            #결과확인
+            sql = ('select * from book where p_id = %s')
+            if isExists(sql, [p_id]):
+                raise Exception('Delete Fail')
+            sql = ('select * from assign where p_id = %s')
+            if isExists(sql, [p_id]):
+                raise Exception('Delete Fail')
+            sql = ('select * from performance where id = %s')
+            if isExists(sql, [p_id]):
+                raise Exception('Delete Fail')
+        except:
+            print('Delete fail - Error occurred')
+    else:
+        print('Performance does not exists : ', p_id)
 
 if __name__ == '__main__':
     while True:
@@ -198,6 +267,8 @@ if __name__ == '__main__':
                 f4()
             elif idx == 5:
                 f5()
+            elif idx == 6:
+                f6()
 
 
 
