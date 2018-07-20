@@ -67,3 +67,20 @@ def umbrella(p):
             trips += 1
             location = 1-location
     return trips
+
+def test():
+    result = [None]*99
+    p=0.01
+    for i in range(99):
+        trips=0
+        for k in range(10000):
+            trips = trips + umbrella(p)
+        result[i] = trips/10000
+        p=p+0.01
+
+    return result
+
+probability_list = test()
+
+for j in range(1,100):
+	print('The number of non-wet trips under the probability',j,'%:',probability_list[j-1])

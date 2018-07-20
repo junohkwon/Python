@@ -142,7 +142,7 @@ def f5():
     sql=('select * from building where id = %s')
     dict = ExecuteQueryWithParam(sql,[b_id])
 
-    if len(dict) == 1:
+    if len(dict) > 0:
 
         connection = getConn()
         try:
@@ -218,7 +218,7 @@ def f7():
     sql=('select * from performance where id = %s')
     dict = ExecuteQueryWithParam(sql,[p_id])
 
-    if len(dict) == 1:
+    if len(dict) > 0:
 
         connection = getConn()
         try:
@@ -288,14 +288,108 @@ def f8():
 
 #관객 삭제
 def f9():
-    pass
+    a_id = int(input('Audience ID: '))
+
+    sql = ('select * from audience where id = %s')
+    dict = ExecuteQueryWithParam(sql, [a_id])
+
+    if len(dict) > 0:
+
+        connection = getConn()
+        try:
+            with connection.cursor() as cursor:
+                # audience 연결된 book 삭제
+                sql = ('delete from book where a_id = %s')
+                cursor.execute(sql, [a_id])
+
+                # audience 삭제
+                sql = ('delete from audience where id = %s')
+                cursor.execute(sql, [a_id])
+
+                connection.commit()
+        except:
+            connection.rollback()
+        finally:
+            connection.close()
+
+        try:
+            # 결과확인
+            sql = ('select * from book where a_id = %s')
+            if isExists(sql, [a_id]):
+                raise Exception('Delete Fail')
+            sql = ('select * from performance where id = %s')
+            if isExists(sql, [a_id]):
+                raise Exception('Delete Fail')
+        except:
+            print('Delete fail - Error occurred')
+    else:
+        print('Audience does not exists : ', a_id)
 
 #공연 배정
 def f10():
-    pass
+    b_id = input('Building ID: ')
+    p_id = input('Performance ID: ')
+
+    sql = ('select * from building where id = %s')
+    dict = ExecuteQueryWithParam(sql, [b_id])
+
+    if len(dict) < 1:
+        print('Building does not exists')
+        return
+
+    sql = ('select * from performance where id = %s')
+    dict = ExecuteQueryWithParam(sql, [p_id])
+
+    if len(dict) < 1:
+        print('Performance does not exists')
+        return
+
+    sql = ('select * from assign where p_id = %s')
+    dict = ExecuteQueryWithParam(sql, [p_id])
+
+    if len(dict) > 0:
+        print('Performance is already assigned')
+        return
+
+    sql = ('insert into assign (p_id, b_id) values (%s, %s)')
+
+    ExecuteNonQuery(sql, [p_id, b_id])
+
+    sql = ('select * from assign where p_id=%s and b_id=%s')
+    dict = ExecuteQueryWithParam(sql, [p_id, b_id])
+
+    if len(dict) == 1:
+        print('Successfully assign a performance')
+    else:
+        print('Performance assign failed - Error occurred')
 
 #공연 예매
 def f11():
+    p_id = int(input('Performance ID: '))
+    a_id = int(input('Audience ID: '))
+    seats = input('Seat List: ')
+
+    seatList = list(map(int,seats.split(',')))
+    #Performance의 최대정원수와 예약된 좌석번호 리스트 추출
+    #예약 가능한 좌석번호 리스트 생성 - 예약된 좌석번호 제거
+    #seatList가 모두 예약가능리스트에 있는지 확인
+    #
+'''
+select 
+ t1.p_id, t1.b_id, t1.capacity, t2.a_id, t2.seat_number
+From (
+select 
+	t1.id p_id, t1.name p_name,
+    t3.id b_id, t3.name b_name, t3.capacity
+from performance t1, assign t2, building t3
+where t1.id = t2.p_id
+and t2.b_id = t3.id
+and t1.id = 1
+) t1, book t2
+where t1.p_id = t2.p_id
+order by t1.p_id, t1.b_id, t2.seat_number
+'''
+
     pass
 
 #공연장에 배정된 공연목록 출력
