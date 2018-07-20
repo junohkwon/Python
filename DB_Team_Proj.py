@@ -86,7 +86,7 @@ logic function
 #모든 공연장 정보 출력
 def f1():
     sql=(' select'
-	     ' t1.id, t1.name, t1.location, t1.capacity, t2.cnt as assigned'
+	     ' t1.id, t1.name, t1.location, t1.capacity, IFNULL(t2.cnt,0) as assigned'
          ' from building t1 left outer join (select b_id, count(*) cnt from assign group by b_id) t2 on (t1.id = t2.b_id)'
          )
     dict = ExecuteQuery(sql)
@@ -103,7 +103,7 @@ def f2():
 
 #모든 관객정보 출력
 def f3():
-    sql = (' select id, name, gendor, age from audience')
+    sql = (' select id, name, gender, age from audience')
     dict = ExecuteQuery(sql)
     printData(dict)
 
@@ -376,64 +376,100 @@ def f11():
         print('Audience does not exists')
         return
 
+    a_age = int(a_dict[0]['age'])
+
     requestSeatList = list(map(int,seats.split(',')))
 
-    sql=('select'
-         '  t1.p_id, t1.b_id, t1.capacity, t2.a_id, t2.seat_number'
-         'From'
+    # Performance의 최대정원수와 예약된 좌석번호 리스트 추출
+    sql=(' select'
+         '  t1.p_id, t1.price, t1.b_id, t1.capacity, t2.a_id, IFNULL(t2.seat_number,-1) seat_number'
+         ' From'
          '	('
          '		select '
-         '			t1.id p_id, t1.name p_name,'
+         '			t1.id p_id, t1.name p_name, t1.price,'
          '			t3.id b_id, t3.name b_name, t3.capacity'
          '		from performance t1, assign t2, building t3'
          '		where t1.id = t2.p_id'
          '		and t2.b_id = t3.id'
          '		and t1.id = %s'
          '	) t1 left outer join book t2 on (t1.p_id = t2.p_id)'
-         'order by t1.p_id, t1.b_id, t2.seat_number'
+         ' order by t1.p_id, t1.b_id, t2.seat_number'
         )
     dict = ExecuteQueryWithParam(sql, [p_id])
 
     if len(dict) < 1:
         print('Performance does not exists')
         return
+
+    # 예약 가능한 좌석번호 리스트를 생성하고 예약된 좌석을 제외한다
     capacity = int(dict[0]['capacity'])
+    ticketPrice = int(dict[0]['price'])
+
     reservedSeatList = []
     for l in dict:
         reservedSeatList.append(l['seat_number'])
 
     totalSeatList = list(range(1,capacity))
-    availableSeatList = totalSeatList - reservedSeatList
 
-    if requestSeatList in availableSeatList:
-        #예약실행
-        pass
+    availableSeatList = [item for item in totalSeatList if item not in reservedSeatList]
+
+    # 사용자가 요구한 좌석이 모두 예약가능한지 확인한다
+    if all(list(map(lambda x : x in availableSeatList, requestSeatList))):
+        try:
+            sql=('insert into book (a_id, p_id, seat_number) values (%s,%s,%s)')
+
+            for seatID in requestSeatList:
+                ExecuteNonQuery(sql,[a_id, p_id, seatID])
+
+            sql = ('select count(*) from book where a_id = %s and p_id = %s and seat_number in (%s)')
+            if isExists(sql, [a_id, p_id, requestSeatList]):
+                raise Exception('Insert Fail')
+        except:
+            print('Reservation fail')
     else:
-        print('좌석이 이미 예약되었습니다.')
-    #Performance의 최대정원수와 예약된 좌석번호 리스트 추출
-    #예약 가능한 좌석번호 리스트 생성 - 예약된 좌석번호 제거 (x-y)
-    #seatList가 모두 예약가능리스트에 있는지 확인
-    #
-'''
-select 
- t1.p_id, t1.b_id, t1.capacity, t2.a_id, t2.seat_number
-From (
-select 
-	t1.id p_id, t1.name p_name,
-    t3.id b_id, t3.name b_name, t3.capacity
-from performance t1, assign t2, building t3
-where t1.id = t2.p_id
-and t2.b_id = t3.id
-and t1.id = 1
-) t1, book t2
-where t1.p_id = t2.p_id
-order by t1.p_id, t1.b_id, t2.seat_number
-'''
+        print('The seat is already taken.')
 
+    # ticket 금액을 계산한다.
+    totalPrice=0
+    if a_age < 8: return 0
+    else:
+        if a_age < 13:
+            totalPrice = round((ticketPrice * 0.5) ,1) * len(requestSeatList)
+        elif a_age < 19:
+            totalPrice = round((ticketPrice * 0.8), 1) * len(requestSeatList)
+        else:
+            totalPrice = ticketPrice * len(requestSeatList)
+
+
+    print('Total ticket price is ', totalPrice)
 
 #공연장에 배정된 공연목록 출력
 def f12():
-    pass
+    b_id = input('Building ID: ')
+
+    sql = ('select * from building where id = %s')
+    dict = ExecuteQueryWithParam(sql, [b_id])
+
+    if len(dict) < 1:
+        print('Building does not exists')
+        return
+
+    sql = (' select'
+           '	t1.p_id id, t1.p_name name, t1.p_type type, t1.ticket_price price, IFNULL(t2.cnt,0) booked'
+           ' from '
+           ' ('
+           ' select '
+           '	t3.id p_id, t3.name p_name, t3.type p_type, t3.price ticket_price'
+           ' from building t1, assign t2, performance t3'
+           ' where t1.id = t2.b_id'
+           ' and t2.p_id = t3.id'
+           ' and t1.id = %s'
+           ' ) t1 left outer join (select  p_id, count(*) cnt from book group by p_id) t2 on (t1.p_id = t2.p_id)'
+            )
+
+    dict = ExecuteQueryWithParam(sql, [b_id])
+    printData(dict)
+
 
 #공연을 예매한 관객정보 출력
 def f13():
