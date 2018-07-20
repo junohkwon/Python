@@ -168,11 +168,7 @@ def f5():
                 sql = ('delete from assign where b_id = %s')
                 cursor.execute(sql, [b_id])
 
-                # buildingSeat 삭제
-                sql = ('delete from buildingSeat where b_id = %s')
-                cursor.execute(sql, [b_id])
-
-                # building삭제
+                # building / building_seat(자동) 삭제
                 sql = ('delete from building where id = %s')
                 cursor.execute(sql, [b_id])
 
@@ -564,60 +560,64 @@ def f16():
 
 if __name__ == '__main__':
     while True:
-        print('==================================================')
-        print('1. print all buildings')
-        print('2. print all performances')
-        print('3. print all audiences')
-        print('4. insert a new building')
-        print('5. remove a building')
-        print('6. insert a new performance')
-        print('7. remove a performance')
-        print('8. insert a new audience')
-        print('9. remove an audience')
-        print('10. assign a performance to a building')
-        print('11. book a performance')
-        print('12. print all performances which assigned at a building')
-        print('13. print all audiences who booked for a performance')
-        print('14. print ticket booking status of a performance')
-        print('15. exit')
-        print('16. reset database')
-        print('==================================================')
-        idx = int(input('Select your action: '))
+        try:
+            print('==================================================')
+            print('1. print all buildings')
+            print('2. print all performances')
+            print('3. print all audiences')
+            print('4. insert a new building')
+            print('5. remove a building')
+            print('6. insert a new performance')
+            print('7. remove a performance')
+            print('8. insert a new audience')
+            print('9. remove an audience')
+            print('10. assign a performance to a building')
+            print('11. book a performance')
+            print('12. print all performances which assigned at a building')
+            print('13. print all audiences who booked for a performance')
+            print('14. print ticket booking status of a performance')
+            print('15. exit')
+            print('16. reset database')
+            print('==================================================')
+            idx = int(input('Select your action: '))
 
-        if idx == 15:
-            print('Bye!')
-            break;
-        else:
-            if idx == 1:
-                f1()
-            elif idx == 2:
-                f2()
-            elif idx == 3:
-                f3()
-            elif idx == 4:
-                f4()
-            elif idx == 5:
-                f5()
-            elif idx == 6:
-                f6()
-            elif idx == 7:
-                f7()
-            elif idx == 8:
-                f8()
-            elif idx == 9:
-                f9()
-            elif idx == 10:
-                f10()
-            elif idx == 11:
-                f11()
-            elif idx == 12:
-                f12()
-            elif idx == 13:
-                f13()
-            elif idx == 14:
-                f14()
-            elif idx == 16:
-                f16()
+            if idx == 15:
+                print('Bye!')
+                break;
+            else:
+                if idx == 1:
+                    f1()
+                elif idx == 2:
+                    f2()
+                elif idx == 3:
+                    f3()
+                elif idx == 4:
+                    f4()
+                elif idx == 5:
+                    f5()
+                elif idx == 6:
+                    f6()
+                elif idx == 7:
+                    f7()
+                elif idx == 8:
+                    f8()
+                elif idx == 9:
+                    f9()
+                elif idx == 10:
+                    f10()
+                elif idx == 11:
+                    f11()
+                elif idx == 12:
+                    f12()
+                elif idx == 13:
+                    f13()
+                elif idx == 14:
+                    f14()
+                elif idx == 16:
+                    f16()
+        except Exception as ex:
+            print(ex)
+
 
 
 
