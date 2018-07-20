@@ -1,5 +1,9 @@
 import pymysql.cursors
 
+'''
+common function
+'''
+
 def getConn():
     connection = pymysql.connect(
         host='147.46.215.246',
@@ -50,7 +54,6 @@ def isExists(sql,params):
     else:
         return False
 
-
 def printData(data):
     print("-------------------------------------------------------------------------------------")
     if len(data)==0:
@@ -76,10 +79,12 @@ def printData(data):
     print()
     print()
 
+'''
+logic function
+'''
 
-
+#모든 공연장 정보 출력
 def f1():
-    #모든 공연장 정보 출력
     sql=(' select'
 	     ' t1.id, t1.name, t1.location, t1.capacity, t2.cnt as assigned'
          ' from building t1 left outer join (select b_id, count(*) cnt from assign group by b_id) t2 on (t1.id = t2.b_id)'
@@ -87,8 +92,8 @@ def f1():
     dict = ExecuteQuery(sql)
     printData(dict)
 
+#모든 공연정보 출력
 def f2():
-    #모든 공연정보 출력
     sql = (' select'
            ' 	t1.id, t1.name, t1.type, t1.price, IFNULL(t2.cnt,0) booked'
            ' from performance t1 left outer join (select p_id, count(*) cnt from book group by p_id) t2 on (t1.id = t2.p_id)'
@@ -96,31 +101,42 @@ def f2():
     dict = ExecuteQuery(sql)
     printData(dict)
 
+#모든 관객정보 출력
 def f3():
-    #모든 관객정보 출력
     sql = (' select id, name, gendor, age from audience')
     dict = ExecuteQuery(sql)
     printData(dict)
 
+#공연장 추가
 def f4():
-    #공연장 추가
-    b_name = input('Building name: ')
-    b_loc = input('Building location: ')
-    b_cap = input('Building capacity: ')
-    sql=('insert into building (name,location,capacity) values(%s,%s,%s)')
+    try:
+        b_name = input('Building name: ')
+        b_loc = input('Building location: ')
+        b_cap = int(input('Building capacity: '))
 
-    ExecuteNonQuery(sql,[b_name,b_loc,b_cap])
+        #validation check
+        b_name = b_name[:200]
+        b_loc = b_loc[:200]
+        if b_cap < 1:
+            print('The capacity must be greater than one')
+            return
 
-    sql=('select * from building where name=%s and location=%s and capacity=%s')
-    dict = ExecuteQueryWithParam(sql,[b_name,b_loc,b_cap])
+        sql=('insert into building (name,location,capacity) values(%s,%s,%s)')
 
-    if len(dict) == 1:
-        print('A building is successfully inserted')
-    else:
-        print('Building insert fail - Error occurred')
+        ExecuteNonQuery(sql,[b_name,b_loc,b_cap])
 
+        sql=('select * from building where name=%s and location=%s and capacity=%s')
+        dict = ExecuteQueryWithParam(sql,[b_name,b_loc,b_cap])
+
+        if len(dict) == 1:
+            print('A building is successfully inserted')
+        else:
+            print('Building insert fail - Error occurred')
+    except Exception as e:
+        print('Error Occurred - ', e)
+
+#공연장 삭제
 def f5():
-    #공연장 삭제
     b_id = int(input('Building ID: '))
 
     sql=('select * from building where id = %s')
@@ -167,27 +183,36 @@ def f5():
     else:
         print('Building does not exists : ', b_id)
 
+#공연 추가
 def f6():
-    #공연 추가
-    p_name = input('Performance name: ')
-    p_type = input('Performance type: ')
-    p_price = input('Performance price: ')
+    try:
+        p_name = input('Performance name: ')
+        p_type = input('Performance type: ')
+        p_price = int(input('Performance price: '))
 
-    sql=('insert into performance (name, type, price) values (%s, %s, %s)')
+        # validation check
+        p_name = p_name[:200]
+        p_type = p_type[:200]
+        if p_price < 0:
+            print('The price must be greater than zero')
+            return
 
-    ExecuteNonQuery(sql, [p_name, p_type, p_price])
+        sql=('insert into performance (name, type, price) values (%s, %s, %s)')
 
-    sql = ('select * from performance where name=%s and type=%s and price=%s')
-    dict = ExecuteQueryWithParam(sql, [p_name, p_type, p_price])
+        ExecuteNonQuery(sql, [p_name, p_type, p_price])
 
-    if len(dict) == 1:
-        print('A performance is successfully inserted')
-    else:
-        print('Performance insert fail - Error occurred')
+        sql = ('select * from performance where name=%s and type=%s and price=%s')
+        dict = ExecuteQueryWithParam(sql, [p_name, p_type, p_price])
 
+        if len(dict) == 1:
+            print('A performance is successfully inserted')
+        else:
+            print('Performance insert fail - Error occurred')
+    except Exception as e:
+        print('Error Occurred - ', e)
 
+#공연 삭제
 def f7():
-    #공연 삭제
     p_id = int(input('Performance ID: '))
 
     sql=('select * from performance where id = %s')
@@ -232,6 +257,65 @@ def f7():
     else:
         print('Performance does not exists : ', p_id)
 
+#관객 추가
+def f8():
+    a_name = input('Audience name: ')
+    a_gender = input('Audience gender: ')
+    a_age = int(input('Audience age: '))
+
+    # validation check
+    a_name = a_name[:200]
+    a_gender = a_gender.upper()
+    if a_gender != 'M' and a_gender != 'F':
+        print('The gender must be "M" or "F"')
+        return
+
+    if a_age < 1:
+        print('The age must be greater than one')
+        return
+
+    sql = ('insert into audience (name, gender, age) values (%s, %s, %s)')
+
+    ExecuteNonQuery(sql, [a_name, a_gender, a_age])
+
+    sql = ('select * from audience where name=%s and gender=%s and age=%s')
+    dict = ExecuteQueryWithParam(sql, [a_name, a_gender, a_age])
+
+    if len(dict) == 1:
+        print('A audience is successfully inserted')
+    else:
+        print('Audience insert fail - Error occurred')
+
+#관객 삭제
+def f9():
+    pass
+
+#공연 배정
+def f10():
+    pass
+
+#공연 예매
+def f11():
+    pass
+
+#공연장에 배정된 공연목록 출력
+def f12():
+    pass
+
+#공연을 예매한 관객정보 출력
+def f13():
+    pass
+
+#공연의 좌석 별 예매상황 출력
+def f14():
+    pass
+
+#데이터베이스 리셋 및 생성
+def f16():
+    reset_yn = input('The database is reset\nDo you want to proceed? ')
+    if reset_yn.upper() == 'Y':
+        pass
+
 if __name__ == '__main__':
     while True:
         print('==================================================')
@@ -255,6 +339,7 @@ if __name__ == '__main__':
         idx = int(input('Select your action: '))
 
         if idx == 15:
+            print('Bye!')
             break;
         else:
             if idx == 1:
@@ -269,7 +354,24 @@ if __name__ == '__main__':
                 f5()
             elif idx == 6:
                 f6()
-
+            elif idx == 7:
+                f7()
+            elif idx == 8:
+                f8()
+            elif idx == 9:
+                f9()
+            elif idx == 10:
+                f10()
+            elif idx == 11:
+                f11()
+            elif idx == 12:
+                f12()
+            elif idx == 13:
+                f13()
+            elif idx == 14:
+                f14()
+            elif idx == 16:
+                f16()
 
 
 
