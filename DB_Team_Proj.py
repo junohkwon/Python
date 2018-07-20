@@ -369,9 +369,49 @@ def f11():
     a_id = int(input('Audience ID: '))
     seats = input('Seat List: ')
 
-    seatList = list(map(int,seats.split(',')))
+    sql=('select * from audience where id = %s')
+    a_dict = ExecuteQueryWithParam(sql, [a_id])
+
+    if len(a_dict) < 1:
+        print('Audience does not exists')
+        return
+
+    requestSeatList = list(map(int,seats.split(',')))
+
+    sql=('select'
+         '  t1.p_id, t1.b_id, t1.capacity, t2.a_id, t2.seat_number'
+         'From'
+         '	('
+         '		select '
+         '			t1.id p_id, t1.name p_name,'
+         '			t3.id b_id, t3.name b_name, t3.capacity'
+         '		from performance t1, assign t2, building t3'
+         '		where t1.id = t2.p_id'
+         '		and t2.b_id = t3.id'
+         '		and t1.id = %s'
+         '	) t1 left outer join book t2 on (t1.p_id = t2.p_id)'
+         'order by t1.p_id, t1.b_id, t2.seat_number'
+        )
+    dict = ExecuteQueryWithParam(sql, [p_id])
+
+    if len(dict) < 1:
+        print('Performance does not exists')
+        return
+    capacity = int(dict[0]['capacity'])
+    reservedSeatList = []
+    for l in dict:
+        reservedSeatList.append(l['seat_number'])
+
+    totalSeatList = list(range(1,capacity))
+    availableSeatList = totalSeatList - reservedSeatList
+
+    if requestSeatList in availableSeatList:
+        #예약실행
+        pass
+    else:
+        print('좌석이 이미 예약되었습니다.')
     #Performance의 최대정원수와 예약된 좌석번호 리스트 추출
-    #예약 가능한 좌석번호 리스트 생성 - 예약된 좌석번호 제거
+    #예약 가능한 좌석번호 리스트 생성 - 예약된 좌석번호 제거 (x-y)
     #seatList가 모두 예약가능리스트에 있는지 확인
     #
 '''
@@ -390,7 +430,6 @@ where t1.p_id = t2.p_id
 order by t1.p_id, t1.b_id, t2.seat_number
 '''
 
-    pass
 
 #공연장에 배정된 공연목록 출력
 def f12():
