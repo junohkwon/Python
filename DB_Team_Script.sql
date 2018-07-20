@@ -1,13 +1,8 @@
 drop table if exists book;
-
 drop table if exists assign;
-
 drop table if exists building_seat;
-
 drop table if exists building;
-
 drop table if exists performance;
-
 drop table if exists audience;
 
 create table building

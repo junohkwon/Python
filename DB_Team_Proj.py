@@ -41,8 +41,21 @@ def ExecuteNonQuery(sql, params):
     connection = getConn()
     try:
         with connection.cursor() as cursor:
-            cursor.execute(sql,params)
+            rowcnt = cursor.execute(sql,params)
             connection.commit()
+
+            return rowcnt
+    finally:
+        connection.close()
+
+def ExecuteNonQueryMany(sql, params):
+    connection = getConn()
+    try:
+        with connection.cursor() as cursor:
+            rowcnt = cursor.executemany(sql,params)
+            connection.commit()
+
+            return rowcnt
     finally:
         connection.close()
 
@@ -123,7 +136,7 @@ def f4():
 
         #공연장 추가
         sql=('insert into building (name,location,capacity) values(%s,%s,%s)')
-        ExecuteNonQuery(sql,[b_name,b_loc,b_cap])
+        rowcnt = ExecuteNonQuery(sql,[b_name,b_loc,b_cap])
 
         sql=('select * from building where name=%s and location=%s and capacity=%s')
         dict = ExecuteQueryWithParam(sql,[b_name,b_loc,b_cap])
@@ -132,14 +145,14 @@ def f4():
             b_id = int(dict[0]['id'])
 
             # 좌석 추가
+            args=()
             for i in range(1, b_cap+1):
-                sql = ('insert into buildingSeat (id,b_id) values(%s,%s)')
-                ExecuteNonQuery(sql, [i, b_id])
+                args += ((i,b_id),)
 
-            sql = ('select count(*) cnt from buildingSeat where b_id=%s')
-            dict_sub = ExecuteQueryWithParam(sql, b_id)
+            sql = ('insert into building_seat (id,b_id) values(%s,%s)')
+            rowcnt = ExecuteNonQueryMany(sql, args)
 
-            if len(dict_sub) == 1 and dict_sub[0]['cnt'] == b_cap:
+            if rowcnt == b_cap:
                 print('A building is successfully inserted')
         else:
             print('Building insert fail - Error occurred')
@@ -162,37 +175,36 @@ def f5():
             with connection.cursor() as cursor:
                 # building에 연결된 book 삭제
                 sql = ('delete from book where p_id in ( select p_id from assign where b_id = %s)')
-                cursor.execute(sql, [b_id])
+                rowcnt = cursor.execute(sql, [b_id])
 
                 # assign 삭제
                 sql = ('delete from assign where b_id = %s')
-                cursor.execute(sql, [b_id])
+                rowcnt = cursor.execute(sql, [b_id])
 
                 # building / building_seat(자동) 삭제
                 sql = ('delete from building where id = %s')
-                cursor.execute(sql, [b_id])
+                rowcnt = cursor.execute(sql, [b_id])
 
                 connection.commit()
+
+                try:
+                    # 결과확인
+                    sql = ('select * from book where p_id in ( select p_id from assign where b_id = %s)')
+                    if isExists(sql, [b_id]):
+                        raise Exception('Delete Fail')
+                    sql = ('select * from assign where b_id = %s')
+                    if isExists(sql, [b_id]):
+                        raise Exception('Delete Fail')
+                    sql = ('select * from building where id = %s')
+                    if isExists(sql, [b_id]):
+                        raise Exception('Delete Fail')
+                except:
+                    print('Delete fail - Error occurred')
         except:
             connection.rollback()
+            print('Error : building delete-fail (rollback)')
         finally:
             connection.close()
-
-        try:
-            #결과확인
-            sql = ('select * from book where p_id in ( select p_id from assign where b_id = %s)')
-            if isExists(sql, [b_id]):
-                raise Exception('Delete Fail')
-            sql = ('select * from assign where b_id = %s')
-            if isExists(sql, [b_id]):
-                raise Exception('Delete Fail')
-            sql = ('select * from building where id = %s')
-            if isExists(sql, [b_id]):
-                raise Exception('Delete Fail')
-        except:
-            print('Delete fail - Error occurred')
-
-
     else:
         print('Building does not exists : ', b_id)
 
@@ -211,13 +223,9 @@ def f6():
             return
 
         sql=('insert into performance (name, type, price) values (%s, %s, %s)')
+        rowcnt = ExecuteNonQuery(sql, [p_name, p_type, p_price])
 
-        ExecuteNonQuery(sql, [p_name, p_type, p_price])
-
-        sql = ('select * from performance where name=%s and type=%s and price=%s')
-        dict = ExecuteQueryWithParam(sql, [p_name, p_type, p_price])
-
-        if len(dict) == 1:
+        if rowcnt > 0:
             print('A performance is successfully inserted')
         else:
             print('Performance insert fail - Error occurred')
@@ -249,24 +257,25 @@ def f7():
                 cursor.execute(sql, [p_id])
 
                 connection.commit()
+
+                try:
+                    # 결과확인
+                    sql = ('select * from book where p_id = %s')
+                    if isExists(sql, [p_id]):
+                        raise Exception('Delete Fail')
+                    sql = ('select * from assign where p_id = %s')
+                    if isExists(sql, [p_id]):
+                        raise Exception('Delete Fail')
+                    sql = ('select * from performance where id = %s')
+                    if isExists(sql, [p_id]):
+                        raise Exception('Delete Fail')
+                except:
+                    print('Error - performance delete fail')
         except:
             connection.rollback()
+            print('Error - performance delete fail (rollback)')
         finally:
             connection.close()
-
-        try:
-            #결과확인
-            sql = ('select * from book where p_id = %s')
-            if isExists(sql, [p_id]):
-                raise Exception('Delete Fail')
-            sql = ('select * from assign where p_id = %s')
-            if isExists(sql, [p_id]):
-                raise Exception('Delete Fail')
-            sql = ('select * from performance where id = %s')
-            if isExists(sql, [p_id]):
-                raise Exception('Delete Fail')
-        except:
-            print('Delete fail - Error occurred')
     else:
         print('Performance does not exists : ', p_id)
 
@@ -289,12 +298,9 @@ def f8():
 
     sql = ('insert into audience (name, gender, age) values (%s, %s, %s)')
 
-    ExecuteNonQuery(sql, [a_name, a_gender, a_age])
+    rowcnt = ExecuteNonQuery(sql, [a_name, a_gender, a_age])
 
-    sql = ('select * from audience where name=%s and gender=%s and age=%s')
-    dict = ExecuteQueryWithParam(sql, [a_name, a_gender, a_age])
-
-    if len(dict) == 1:
+    if rowcnt > 0:
         print('A audience is successfully inserted')
     else:
         print('Audience insert fail - Error occurred')
@@ -320,21 +326,22 @@ def f9():
                 cursor.execute(sql, [a_id])
 
                 connection.commit()
+
+                try:
+                    # 결과확인
+                    sql = ('select * from book where a_id = %s')
+                    if isExists(sql, [a_id]):
+                        raise Exception('Delete Fail')
+                    sql = ('select * from audience where id = %s')
+                    if isExists(sql, [a_id]):
+                        raise Exception('Delete Fail')
+                except:
+                    print('Error - audience delete fail')
         except:
             connection.rollback()
+            print('Error - audience delete fail (rollback)')
         finally:
             connection.close()
-
-        try:
-            # 결과확인
-            sql = ('select * from book where a_id = %s')
-            if isExists(sql, [a_id]):
-                raise Exception('Delete Fail')
-            sql = ('select * from performance where id = %s')
-            if isExists(sql, [a_id]):
-                raise Exception('Delete Fail')
-        except:
-            print('Delete fail - Error occurred')
     else:
         print('Audience does not exists : ', a_id)
 
@@ -409,7 +416,7 @@ def f11():
          '	        select 	'
          '				t1.id p_id, t1.name p_name, t1.price,	'
          '				t3.id b_id, t3.name b_name, t3.capacity, t4.id seat_id	'
-         '			from performance t1, assign t2, building t3, buildingSeat t4	'
+         '			from performance t1, assign t2, building t3, building_seat t4	'
          '			where t1.id = t2.p_id	'
          '			and t2.b_id = t3.id	'
          '			and t1.id = %s	'
@@ -542,7 +549,7 @@ def f14():
          '	(	'
          '	select 	'
          '		t1.id p_id, t3.id seat_number	'
-         '	from performance t1, assign t2, buildingSeat t3	'
+         '	from performance t1, assign t2, building_seat t3	'
          '	where t1.id = %s	'
          '	and t1.id = t2.p_id	'
          '	and t2.b_id = t3.b_id	'
@@ -556,7 +563,32 @@ def f14():
 def f16():
     reset_yn = input('The database is reset\nDo you want to proceed? ')
     if reset_yn.upper() == 'Y':
-        pass
+        connection = getConn()
+        try:
+            with connection.cursor() as cursor:
+
+                scripts = ['drop table if exists book;',
+                           'drop table if exists assign;',
+                           'drop table if exists building_seat;',
+                           'drop table if exists building;',
+                           'drop table if exists performance;',
+                           'drop table if exists audience;',
+                           'create table building (	id	int auto_increment not null,    name	varchar(200),    location	varchar(200),    capacity	int unsigned,    primary key(id));',
+                           'create table building_seat (	id	int not null,    b_id	int not null,    primary key(id, b_id),    foreign key(b_id) references building(id) on delete cascade);',
+                           'create table performance (	id	int auto_increment not null,    name	varchar(200),    type	varchar(200),    price	int unsigned,    primary key(id));',
+                           'create table audience (	id	int auto_increment not null,    name	varchar(200),    gender	char(2),    age	int unsigned,    primary key(id));',
+                           'create table book (    a_id int not null,	p_id int not null,    seat_number int,    primary key(a_id,p_id,seat_number),    foreign key(a_id) references audience(id),    foreign key(p_id) references performance(id));',
+                           'create table assign (	p_id int not null,	b_id int,    primary key(p_id),    foreign key(p_id) references performance(id),    foreign key(b_id) references building(id));']
+                for sql in scripts:
+                    rowcnt = cursor.execute(sql)
+                    if rowcnt < 0 :
+                        print('error')
+                        break
+
+        except Exception as ex:
+            print('Error', ex)
+        finally:
+            connection.close()
 
 if __name__ == '__main__':
     while True:
