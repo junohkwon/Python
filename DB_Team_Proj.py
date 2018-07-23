@@ -431,7 +431,7 @@ def f11():
         requestSeatList = list(map(int,seats.split(',')))
 
         # 공연이 공연장에 배정되지 않은경우
-        sql = ('select count(*) from assign where p_id = %s')
+        sql = ('select 1 from assign where p_id = %s')
         dict = ExecuteQueryWithParam(sql, [p_id])
 
         if len(dict) < 1:
@@ -482,8 +482,7 @@ def f11():
                     sql = ('insert into book (a_id, p_id, seat_number) values (%s,%s,%s)')
                     ExecuteNonQuery(sql,[a_id, p_id, seatID])
 
-                    sql = ('select count(*) from book where a_id = %s and p_id = %s and seat_number = %s')
-
+                    sql = ('select 1 from book where a_id = %s and p_id = %s and seat_number = %s')
                     if (not isExists(sql,[a_id, p_id, seatID])):
                         raise Exception('Insert Fail')
 
@@ -516,7 +515,7 @@ def f12():
     try:
         b_id = int(input('Building ID: '))
 
-        sql = ('select count(*) from building where id = %s')
+        sql = ('select 1 from building where id = %s')
         dict = ExecuteQueryWithParam(sql, [b_id])
 
         if len(dict) < 1:
@@ -547,7 +546,7 @@ def f13():
     try:
         p_id = int(input('Performance ID: '))
 
-        sql = ('select count(*) from performance where id = %s')
+        sql = ('select 1 from performance where id = %s')
         dict = ExecuteQueryWithParam(sql, [p_id])
 
         if len(dict) < 1:
@@ -574,7 +573,7 @@ def f14():
     try:
         p_id = int(input('Performance ID: '))
 
-        sql = ('select count(*) from performance where id = %s')
+        sql = ('select 1 from performance where id = %s')
         dict = ExecuteQueryWithParam(sql, [p_id])
 
         if len(dict) < 1:
@@ -582,7 +581,7 @@ def f14():
             return
 
         #공연이 공연장에 배정되지 않은경우
-        sql = ('select count(*) from assign where p_id = %s')
+        sql = ('select 1 from assign where p_id = %s')
         dict = ExecuteQueryWithParam(sql, [p_id])
 
         if len(dict) < 1:
