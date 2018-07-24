@@ -64,7 +64,7 @@ def quickSort(items):
 
         for i, val in enumerate(items):
             if i != pivot_index:
-                if val < lst[pivot_index]:
+                if val < items[pivot_index]:
                     smaller_items.append(val)
                 else:
                     larger_items.append(val)
@@ -73,58 +73,60 @@ def quickSort(items):
         quickSort(larger_items)
         items[:] = smaller_items + [items[pivot_index]] + larger_items
 
+    return items
+
 if __name__ == '__main__':
 
-   #  ##selectionSort
-   #  for c in range(0,3):
-   #      lst = [r.randint(0, 100*(10**c)) for i in range(100*(10**c))]
-   #      print('loop count : ', 100*(10**c))
-   #      startTime = time.clock()
-   #      selectionSort(lst)
-   #      endTime = time.clock()
-   #      elapsedTime = endTime - startTime
-   #      print('The elapsed time for selectionSort is : ', elapsedTime)
-   #  print('===================================================')
-   #  ##mergesort
-   #  for c in range(0,3):
-   #      lst = [r.randint(0, 100*(10**c)) for i in range(100*(10**c))]
-   #      print('loop count : ', 100*(10**c))
-   #      startTime = time.clock()
-   #      mergeSort(lst)
-   #      endTime = time.clock()
-   #      elapsedTime = endTime - startTime
-   #      print('The elapsed time for mergeSort is : ', elapsedTime)
-   #
-   #
-   #  print('===================================================')
-   # ##bubbleSort
-   #  for c in range(0,3):
-   #      lst = [r.randint(0, 100*(10**c)) for i in range(100*(10**c))]
-   #      print('loop count : ', 100*(10**c))
-   #      startTime = time.clock()
-   #      bubblesort(lst)
-   #      endTime = time.clock()
-   #      elapsedTime = endTime - startTime
-   #      print('The elapsed time for bubbleSort is : ', elapsedTime)
-   #
-   #  print('===================================================')
-   # ##insertionSort
-   #  for c in range(0,3):
-   #      lst = [r.randint(0, 100*(10**c)) for i in range(100*(10**c))]
-   #      print('loop count : ', 100*(10**c))
-   #      startTime = time.clock()
-   #      insertionSort(lst)
-   #      endTime = time.clock()
-   #      elapsedTime = endTime - startTime
-   #      print('The elapsed time for insertionSort is : ', elapsedTime)
-   #
+    ##selectionSort
+    for c in range(0,3):
+        lst = [r.randint(0, 100*(10**c)) for i in range(100*(10**c))]
+        print('loop count : ', 100*(10**c))
+        startTime = time.clock()
+        selectionSort(lst)
+        endTime = time.clock()
+        elapsedTime = endTime - startTime
+        print('The elapsed time for selectionSort is : ', elapsedTime)
+    print('===================================================')
+    ##mergesort
+    for c in range(0,3):
+        lst = [r.randint(0, 100*(10**c)) for i in range(100*(10**c))]
+        print('loop count : ', 100*(10**c))
+        startTime = time.clock()
+        mergeSort(lst)
+        endTime = time.clock()
+        elapsedTime = endTime - startTime
+        print('The elapsed time for mergeSort is : ', elapsedTime)
+
+
+    print('===================================================')
+   ##bubbleSort
+    for c in range(0,3):
+        lst = [r.randint(0, 100*(10**c)) for i in range(100*(10**c))]
+        print('loop count : ', 100*(10**c))
+        startTime = time.clock()
+        bubblesort(lst)
+        endTime = time.clock()
+        elapsedTime = endTime - startTime
+        print('The elapsed time for bubbleSort is : ', elapsedTime)
+
+    print('===================================================')
+   ##insertionSort
+    for c in range(0,3):
+        lst = [r.randint(0, 100*(10**c)) for i in range(100*(10**c))]
+        print('loop count : ', 100*(10**c))
+        startTime = time.clock()
+        insertionSort(lst)
+        endTime = time.clock()
+        elapsedTime = endTime - startTime
+        print('The elapsed time for insertionSort is : ', elapsedTime)
+
     print('===================================================')
    ##quicksort
     for c in range(0,3):
         lst = [r.randint(0, 100*(10**c)) for i in range(100*(10**c))]
         print('loop count : ', 100*(10**c))
         startTime = time.clock()
-        quickSort(lst)
+        lst = quickSort(lst)
         print(lst)
         endTime = time.clock()
         elapsedTime = endTime - startTime
