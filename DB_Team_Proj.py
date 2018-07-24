@@ -466,10 +466,16 @@ def f11():
         capacity = int(dict[0]['capacity'])
         ticketPrice = int(dict[0]['price'])
 
-        if capacity < len(requestSeatList):
-            print('You have exceeded the reserve capacity of the venue.')
+        #예약을 요청한 좌석의 수가 남아 있는 좌석수를 초과하는 경우
+        if len(dict) < len(requestSeatList):
+            print('You have exceeded the reserve capacity of the building.')
             return
 
+        #예약을 요청한 좌석이 존재하지 않는 좌석인 경우
+        for req in requestSeatList:
+            if req > capacity:
+                print('Seat number of building is less than {0}'.format(capacity))
+                return
 
         availableSeatList = []
         for l in dict:
