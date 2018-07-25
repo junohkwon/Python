@@ -30,7 +30,9 @@ def f20(matrix):
     print(*list(map(lambda x:x[1][x[0]], enumerate(matrix))),sep='\n')
 
 def f22(lst):
-    print(*list(map(lambda x:list(range(x,-1,-1)),lst)),sep='\n')
+    li = list(map(lambda x:list(range(x,-1,-1)),lst))
+    for i in li:
+        print(*i)
 
 def f24(n):
     print(*filter(lambda x : x%2==0 or x%3==0, range(1,n+1)),sep='\n')
