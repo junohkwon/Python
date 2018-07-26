@@ -101,7 +101,7 @@ if __name__ == '__main__':
 
     file = open('C:\\Project\\sorting.txt', 'a')
     #selectionSort
-    file.write('insertionSort')
+    file.write('sorted')
     file.write('Algorithm, No, Sample, Loop, Time\n')
     for no in range(0,10):
         for c in range(0,3):
@@ -111,12 +111,13 @@ if __name__ == '__main__':
             startTime = time.clock()
             #selectionSort(lst)
             #bubblesort(lst)
-            insertionSort(lst)
+            #insertionSort(lst)
             #quickSort(lst)
+            sorted(lst)
             endTime = time.clock()
             elapsedTime = endTime - startTime
-            print('The elapsed time for insertionSort is : ', elapsedTime)
-            file.write('insertionSort,{0},{1},{2},{3}\n'.format(no,100*(10**c),totalCompare,elapsedTime))
+            print('The elapsed time for sorted is : ', elapsedTime)
+            file.write('sorted,{0},{1},{2},{3}\n'.format(no,100*(10**c),totalCompare,elapsedTime))
 
    #  print('===================================================')
    #  ##mergesort
