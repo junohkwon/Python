@@ -3,9 +3,9 @@ from contextlib import contextmanager
 from io import StringIO
 
 
-mp = __import__('hw_team10_14-A')
-fn = __import__('hw_team10_14-A_french_numbers')
-rp = __import__('hw_team10_14-B')
+mp = __import__('ch14-A_More_Programming_Practice_1')
+fn = __import__('ch14-A_More_Programming_Practice_Franch')
+rp = __import__('ch14-B_More_Programming_Practice_2')
 
 
 @contextmanager

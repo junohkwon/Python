@@ -1,6 +1,6 @@
 # print french for the numbers between lo and hi (inclusive)
 def print_french(lo, hi):
-    for i in range(lo,hi):
+    for i in range(lo,hi+1):
         print(i , num_in_french(i))
     return None
 
@@ -36,11 +36,11 @@ def num_in_french(num):  # assumes 0 <= num <= 100
         elif num >= 77 and num < 80:
             result_str = tens_list[6] + '-' + tens_list[1] + '-' + ones_list[one_digit]
         elif num >= 80:  #80이상
-            result_str = tens_list[4] + '-' + tens_list[2]
+            result_str = tens_list[8]
             if num == 80:
                 result_str += 's'
             elif num > 96:
-                result_str += '-' + tens_list[1] + '-' + ones_list[num-80]
+                result_str += '-' + ones_list[num-80]
             else:
                 result_str += '-' + ones_list[num-80]
         else:
@@ -57,5 +57,6 @@ def num_in_french(num):  # assumes 0 <= num <= 100
 
     return result_str
 
-
-print_french(0,101)
+if __name__ == '__main__':
+    print_french(90
+                 ,100)
