@@ -107,45 +107,69 @@
 # A._Person__secrectMethod()  #class내부의 private Method를 접근
 # print(A._Person__secretCount) #class내부의 pricate Variable을 접근
 
-class Employee:
-    empCount=0
-    __secretCount=0
-
-
-    def __init__(self,name,salary):
-        self.name = name
-        self.salary = salary
-        Employee.empCount += 1
-
-    def displayCount(self):
-        print('Total Employee %d'%Employee.empCount)
-
-    def displayEmployee(self):
-        print('Name : ',self.name,', Salary : ', self.salary)
-
-    @classmethod
-    def showEmployeeCount(cls):
-        return Employee.empCount
-
-
-emp1 = Employee("Zara",2000)
-emp2=  Employee('Manni',5000)
-emp1.displayEmployee()
-emp2.displayEmployee()
-
-print(id(emp1.empCount), id(emp2.empCount), id(Employee.empCount))
-
-print(id(emp1._Employee__secretCount), id(emp2._Employee__secretCount))
-
-
-print(id(emp1.name), id(emp2.name))
-
-print(id(emp1.displayCount), id(emp2.displayCount), id(Employee.displayCount))
-
-print('Total Employee %d'%Employee.showEmployeeCount())
+# class Employee:
+#     empCount=0
+#     __secretCount=0
+#
+#
+#     def __init__(self,name,salary):
+#         self.name = name
+#         self.salary = salary
+#         Employee.empCount += 1
+#
+#     def displayCount(self):
+#         print('Total Employee %d'%Employee.empCount)
+#
+#     def displayEmployee(self):
+#         print('Name : ',self.name,', Salary : ', self.salary)
+#
+#     @classmethod
+#     def showEmployeeCount(cls):
+#         return Employee.empCount
+#
+#
+# emp1 = Employee("Zara",2000)
+# emp2=  Employee('Manni',5000)
+# emp1.displayEmployee()
+# emp2.displayEmployee()
+#
+# print(id(emp1.empCount), id(emp2.empCount), id(Employee.empCount))
+#
+# print(id(emp1._Employee__secretCount), id(emp2._Employee__secretCount))
+#
+#
+# print(id(emp1.name), id(emp2.name))
+#
+# print(id(emp1.displayCount), id(emp2.displayCount), id(Employee.displayCount))
+#
+# print('Total Employee %d'%Employee.showEmployeeCount())
 
 # print(Employee.__doc__)
 # print(Employee.__name__)
 # print(Employee.__module__)
 # print(Employee.__bases__)
 # print(Employee.__dict__)
+
+# class MyCollection:
+#     def __init__(self):
+#         self.size = 10
+#         self.data = list(range(self.size))
+#
+#     def __iter__(self):
+#         self.index = 0
+#         print('this is iter() : ',self.index)
+#         return self
+#
+#     def __next__(self):
+#         print('this is next() : ', self.index)
+#         if self.index >= self.size:
+#             raise StopIteration
+#
+#         n = self.data[self.index]
+#         self.index += 1
+#         return n
+#
+#
+# coll = MyCollection()
+# for x in coll:
+#     print(x)
