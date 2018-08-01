@@ -58,5 +58,4 @@ def num_in_french(num):  # assumes 0 <= num <= 100
     return result_str
 
 if __name__ == '__main__':
-    print_french(90
-                 ,100)
+    print_french(90,100)
