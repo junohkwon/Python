@@ -1,3 +1,4 @@
+
 # print french for the numbers between lo and hi (inclusive)
 def print_french(lo, hi):
     for i in range(lo,hi+1):
@@ -56,6 +57,3 @@ def num_in_french(num):  # assumes 0 <= num <= 100
                 pass
 
     return result_str
-
-if __name__ == '__main__':
-    print_french(90,100)

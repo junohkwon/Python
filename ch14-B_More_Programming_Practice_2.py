@@ -41,16 +41,6 @@ def sort_repeated(L):
 
     return list(set(rslt))
 
-
-def sort_repeated(L):
-    seen = set()
-    seenAgain = set()
-    for element in L:
-        if element in seen:
-            seenAgain.add(element)
-        seen.add(element)
-    return sorted(seenAgain)
-
 def make_Dict_number(lst):
     lst = sorted(lst)
     dict ={}
@@ -98,7 +88,3 @@ def histogram(d):
             dict[v] = 1
 
     return dict
-
-
-if __name__ == '__main__':
-    print(most_Frequent([2, 5, 3, 4, 6, 4, 2, 4, 5]))
