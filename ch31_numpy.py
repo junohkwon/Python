@@ -1,3 +1,9 @@
+'''
+Word file에 정리해서 제출
+코드는 캡쳐해서 정리
+'''
+
+
 import numpy as np
 
 #1.Create an array of size 10 filled with 0
